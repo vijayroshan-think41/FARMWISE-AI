@@ -9,11 +9,6 @@ from sqlalchemy.orm import selectinload
 
 from app.db.models import ChatMessage, ChatSession, User, utcnow
 from app.services.agent_client import send_chat_request
-from app.services.data_service import (
-    list_latest_mandi_prices,
-    list_latest_weather,
-    list_region_crops,
-)
 
 
 def _build_session_title(message: str) -> str:
@@ -63,7 +58,7 @@ async def process_chat_message(
     session_id: UUID | None,
     message: str,
 ) -> tuple[ChatSession, str]:
-    user = await _get_user_with_region(db, user_id)
+    await _get_user_with_region(db, user_id)
     if session_id is None:
         session = ChatSession(user_id=user_id, title=_build_session_title(message))
         db.add(session)
@@ -76,48 +71,10 @@ async def process_chat_message(
             for msg in sorted(session.messages, key=lambda item: item.created_at)
         ]
 
-    season_crops = await list_region_crops(db, user.region_id)
-    weather = await list_latest_weather(db, user.region_id)
-    mandi_prices = await list_latest_mandi_prices(db, user.region_id)
-
     payload = {
+        "user_id": str(user_id),
         "message": message,
         "session_history": session_history,
-        "context": {
-            "state": user.region.state,
-            "district": user.region.district,
-            "dominant_soil_type": user.region.dominant_soil_type,
-            "water_availability": user.water_availability or user.region.default_water_availability,
-            "irrigation_type": user.irrigation_type,
-            "current_crop": user.current_crop,
-            "sowing_date": str(user.sowing_date) if user.sowing_date else None,
-            "season_crops": [
-                {
-                    "crop_name": crop.crop_name,
-                    "crop_season": crop.crop_season,
-                    "suitability_score": crop.suitability_score,
-                }
-                for crop in season_crops
-            ],
-            "weather": [
-                {
-                    "forecast_date": forecast.forecast_date.isoformat(),
-                    "min_temp": forecast.min_temp,
-                    "max_temp": forecast.max_temp,
-                    "expected_rainfall_mm": forecast.expected_rainfall_mm,
-                    "humidity_pct": forecast.humidity_pct,
-                }
-                for forecast in weather
-            ],
-            "mandi_prices": [
-                {
-                    "crop_name": price.crop_name,
-                    "price_per_quintal": price.price_per_quintal,
-                    "recorded_date": price.recorded_date.isoformat(),
-                }
-                for price in mandi_prices
-            ],
-        },
     }
     assistant_reply = await send_chat_request(payload)
 
