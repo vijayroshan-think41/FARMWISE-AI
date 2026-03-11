@@ -8,13 +8,13 @@ FarmWise AI is an agricultural advisory platform split across three services:
 - `server/` is the backend API and persistence layer.
 - `Agents/` is the separate reasoning service.
 
-The backend exists to manage structured data and session state. It should never implement AI reasoning. Its job is to collect authenticated user context, regional agricultural data, weather, mandi prices, and chat history, then forward that context to the agent service.
+The backend exists to manage structured data and session state. It should never implement AI reasoning. Its job is to authenticate the user, manage session state, and forward `user_id`, `message`, and `session_history` to the agent service.
 
 ## Local Runtime
 
 - Backend API runs on `http://localhost:8010`
 - PostgreSQL runs on `localhost:5433`
-- Agent service is expected on `http://localhost:8001`
+- Agent service is expected on `http://localhost:8000`
 - Frontend runs on `http://localhost:5173`
 
 ## PostgreSQL Access
@@ -46,10 +46,13 @@ If a future change starts moving backend persistence rules into `Agents/`, that 
 ```text
 Agents/
 ├── __init__.py
+├── app.py
+├── pyproject.toml
 ├── parser.py
-├── agent/
+├── orchestrator/
 │   ├── __init__.py
-│   └── agent.py
+│   ├── agent.py
+│   └── tools.py
 └── docs/
     ├── index.json
     ├── advisories/
@@ -326,7 +329,7 @@ npm run lint
 - Keep route-level data loading inside page components.
 - Keep presentational widgets and cards in `client/src/components/`.
 - Preserve the memory-only auth behavior unless the product requirement explicitly changes.
-- Do not add direct client calls to `http://localhost:8001`; the frontend should only talk to the backend API.
+- Do not add direct client calls to `http://localhost:8000`; the frontend should only talk to the backend API.
 - If you change the visual system, preserve the current minimal Tailwind setup instead of reintroducing MUI or another UI framework without a requirement.
 - If you add new structured chat cards, update both the intent switch and the typed card data shapes.
 
@@ -477,7 +480,7 @@ All backend routes are mounted under `/api`.
 ### Chat Endpoints
 
 - `POST /api/chat/message`
-  Accepts a user message, creates a session if needed, builds backend context, forwards it to the agent service, and stores both the user and assistant messages.
+  Accepts a user message, creates a session if needed, forwards `user_id`, `message`, and `session_history` to the agent service, and stores both the user and assistant messages.
 - `GET /api/chat/sessions`
   Returns all chat sessions owned by the authenticated user.
 - `GET /api/chat/sessions/{session_id}`
@@ -491,15 +494,11 @@ What it does:
 
 - validates the authenticated user
 - creates a new chat session if `session_id` is absent
-- loads the user’s region
-- loads latest weather rows for that region
-- loads latest mandi prices per crop
-- loads regional crop suitability rows
 - loads prior session history if the session already exists
-- builds the structured payload for `AGENT_SERVICE_URL/agent/chat`, including user crop context such as `current_crop` and `sowing_date`
+- builds the agent payload with `user_id`, `message`, and `session_history`
 - stores the user message and assistant reply in `chat_messages`
 
-The backend only forwards context. It does not decide the answer itself.
+The backend does not decide the answer itself. The agent fetches any additional user or regional context it needs via its own tools.
 
 ## Developer Commands
 

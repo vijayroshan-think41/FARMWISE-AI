@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 *.db
 .env
+Agents/.env
 .venv/
 dist/
 .DS_Store
