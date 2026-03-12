@@ -58,6 +58,10 @@ If a future change starts moving backend persistence rules into `Agents/`, that 
 ```text
 Agents/
 ├── __init__.py
+├── advisory_agent/
+│   ├── __init__.py
+│   ├── agent.py
+│   └── tools.py
 ├── app.py
 ├── crop_agent/
 │   ├── __init__.py
@@ -71,16 +75,16 @@ Agents/
 │   ├── __init__.py
 │   ├── agent.py
 │   └── tools.py
-├── pest_agent/
-│   ├── __init__.py
-│   ├── agent.py
-│   └── tools.py
-├── pyproject.toml
 ├── parser.py
 ├── orchestrator/
 │   ├── __init__.py
 │   ├── agent.py
 │   └── tools.py
+├── pest_agent/
+│   ├── __init__.py
+│   ├── agent.py
+│   └── tools.py
+├── pyproject.toml
 └── docs/
     ├── index.json
     ├── advisories/
@@ -124,8 +128,16 @@ Current request contract:
 - request body includes `user_id`, `message`, and `session_history`
 - the app formats prior turns into a prompt prefix before invoking the root agent
 - the root orchestrator always calls `get_user_context` first
-- the orchestrator can delegate to `pest_agent`, `irrigation_agent`, `market_agent`, and `crop_agent`
+- the orchestrator can delegate to `pest_agent`, `irrigation_agent`, `market_agent`, `crop_agent`, and `advisory_agent`
 - the HTTP response currently returns `{ "reply": "..." }`
+
+## Specialist Agent Roles
+
+- `pest_agent` handles pest and disease diagnosis, treatment options, pesticide guidance, and spray timing.
+- `irrigation_agent` handles crop watering schedules, rainfall-aware skip days, and growth-stage water guidance.
+- `market_agent` handles mandi prices, short-term price trends, MSP questions, and sell-now versus wait decisions.
+- `crop_agent` handles crop planning, sowing-window decisions, regional suitability, and basic yield/revenue comparison.
+- `advisory_agent` handles fertilizers, NPK schedules, micronutrients, government schemes, subsidies, organic practices, water conservation, and seasonal advisory guidance. Uses `search_docs` to ground answers in the curated document corpus rather than model memory.
 
 ## Agent Document Corpus
 
