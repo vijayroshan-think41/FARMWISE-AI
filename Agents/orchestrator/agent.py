@@ -12,12 +12,14 @@ try:
     from irrigation_agent.agent import build_irrigation_agent
     from market_agent.agent import build_market_agent
     from crop_agent.agent import build_crop_agent
+    from advisory_agent.agent import build_advisory_agent
 except ImportError:
     from Agents.orchestrator.tools import get_user_context
     from Agents.pest_agent.agent import build_pest_agent
     from Agents.irrigation_agent.agent import build_irrigation_agent
     from Agents.market_agent.agent import build_market_agent
     from Agents.crop_agent.agent import build_crop_agent
+    from Agents.advisory_agent.agent import build_advisory_agent
 
 root_agent = Agent(
     name="farmwise_orchestrator",
@@ -34,12 +36,14 @@ Every message you receive starts with a user_id and a message, like this:
 Always call get_user_context with the user_id first to learn about the farmer
 before doing anything else.
 
-You have four specialist agents available:
+You have five specialist agents available:
 
 - pest_agent: pest and disease diagnosis, treatment, spray timing
 - irrigation_agent: watering schedules, water amounts, skip days
 - market_agent: mandi prices, 7-day price trends, sell timing, MSP
 - crop_agent: what to plant next, sowing windows, yield and revenue estimates
+- advisory_agent: fertilizers, NPK, government schemes, subsidies, organic
+  farming, seasonal advisories, general crop overviews
 
 Delegate to pest_agent when the farmer describes:
 - spots, patches, or discolouration on leaves or fruit
@@ -69,9 +73,14 @@ Delegate to crop_agent when the farmer asks about:
 - expected costs, yield, or revenue from a crop
 - comparing two or more crops to decide what to grow
 
-For everything else — fertilizer, soil preparation, general farming
-questions — answer directly using the farmer's context. One more specialist
-is coming soon for those topics.
+Delegate to advisory_agent when the farmer asks about:
+- fertilizers, NPK ratios, urea, DAP, or micronutrients
+- when or how to apply fertilizer to their crop
+- government schemes (PM-KISAN, PMFBY, PMKSY, KCC, NFSM, etc.)
+- subsidies on inputs, irrigation equipment, or seeds
+- organic farming methods or soil health
+- seasonal advisory or regional outlook
+- a general overview of a crop (not what to plant, but how to manage it)
 
 Guidelines:
 - Always call get_user_context first, every turn.
@@ -92,5 +101,6 @@ You must never:
         build_irrigation_agent(),
         build_market_agent(),
         build_crop_agent(),
+        build_advisory_agent(),
     ],
 )
