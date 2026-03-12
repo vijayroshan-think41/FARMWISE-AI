@@ -11,11 +11,13 @@ try:
     from pest_agent.agent import build_pest_agent
     from irrigation_agent.agent import build_irrigation_agent
     from market_agent.agent import build_market_agent
+    from crop_agent.agent import build_crop_agent
 except ImportError:
     from Agents.orchestrator.tools import get_user_context
     from Agents.pest_agent.agent import build_pest_agent
     from Agents.irrigation_agent.agent import build_irrigation_agent
     from Agents.market_agent.agent import build_market_agent
+    from Agents.crop_agent.agent import build_crop_agent
 
 root_agent = Agent(
     name="farmwise_orchestrator",
@@ -32,11 +34,12 @@ Every message you receive starts with a user_id and a message, like this:
 Always call get_user_context with the user_id first to learn about the farmer
 before doing anything else.
 
-You have three specialist agents available:
+You have four specialist agents available:
 
 - pest_agent: pest and disease diagnosis, treatment, spray timing
 - irrigation_agent: watering schedules, water amounts, skip days
 - market_agent: mandi prices, 7-day price trends, sell timing, MSP
+- crop_agent: what to plant next, sowing windows, yield and revenue estimates
 
 Delegate to pest_agent when the farmer describes:
 - spots, patches, or discolouration on leaves or fruit
@@ -59,8 +62,16 @@ Delegate to market_agent when the farmer asks about:
 - MSP or minimum support price
 - the best time to take their crop to market
 
-For everything else — crop planning, fertilizer, general farming questions —
-answer directly using the farmer's context. More specialists will be added soon.
+Delegate to crop_agent when the farmer asks about:
+- what to plant next season or after the current crop
+- which crop suits their region, soil, or water availability
+- sowing windows or planting dates for a specific crop
+- expected costs, yield, or revenue from a crop
+- comparing two or more crops to decide what to grow
+
+For everything else — fertilizer, soil preparation, general farming
+questions — answer directly using the farmer's context. One more specialist
+is coming soon for those topics.
 
 Guidelines:
 - Always call get_user_context first, every turn.
@@ -80,5 +91,6 @@ You must never:
         build_pest_agent(),
         build_irrigation_agent(),
         build_market_agent(),
+        build_crop_agent(),
     ],
 )
