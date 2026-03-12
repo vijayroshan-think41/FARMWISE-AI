@@ -59,6 +59,10 @@ If a future change starts moving backend persistence rules into `Agents/`, that 
 Agents/
 ├── __init__.py
 ├── app.py
+├── crop_agent/
+│   ├── __init__.py
+│   ├── agent.py
+│   └── tools.py
 ├── irrigation_agent/
 │   ├── __init__.py
 │   ├── agent.py
@@ -120,7 +124,7 @@ Current request contract:
 - request body includes `user_id`, `message`, and `session_history`
 - the app formats prior turns into a prompt prefix before invoking the root agent
 - the root orchestrator always calls `get_user_context` first
-- the orchestrator can delegate to `pest_agent`, `irrigation_agent`, and `market_agent`
+- the orchestrator can delegate to `pest_agent`, `irrigation_agent`, `market_agent`, and `crop_agent`
 - the HTTP response currently returns `{ "reply": "..." }`
 
 ## Agent Document Corpus
