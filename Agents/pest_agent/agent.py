@@ -8,18 +8,11 @@ load_dotenv()
 
 from google.adk.agents import Agent
 
-try:
-    from pest_agent.tools import (
-        get_pest_guide,
-        get_pesticide_reference,
-        get_weather_forecast,
-    )
-except ImportError:
-    from Agents.pest_agent.tools import (
-        get_pest_guide,
-        get_pesticide_reference,
-        get_weather_forecast,
-    )
+from .tools import (
+    get_pest_guide,
+    get_pesticide_reference,
+    get_weather_forecast,
+)
 
 
 def build_pest_agent() -> Agent:

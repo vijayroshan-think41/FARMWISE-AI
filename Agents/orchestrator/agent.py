@@ -6,20 +6,12 @@ load_dotenv()
 
 from google.adk.agents import Agent
 
-try:
-    from orchestrator.tools import get_user_context
-    from pest_agent.agent import build_pest_agent
-    from irrigation_agent.agent import build_irrigation_agent
-    from market_agent.agent import build_market_agent
-    from crop_agent.agent import build_crop_agent
-    from advisory_agent.agent import build_advisory_agent
-except ImportError:
-    from Agents.orchestrator.tools import get_user_context
-    from Agents.pest_agent.agent import build_pest_agent
-    from Agents.irrigation_agent.agent import build_irrigation_agent
-    from Agents.market_agent.agent import build_market_agent
-    from Agents.crop_agent.agent import build_crop_agent
-    from Agents.advisory_agent.agent import build_advisory_agent
+from ..advisory_agent.agent import build_advisory_agent
+from ..crop_agent.agent import build_crop_agent
+from ..irrigation_agent.agent import build_irrigation_agent
+from ..market_agent.agent import build_market_agent
+from ..pest_agent.agent import build_pest_agent
+from .tools import get_user_context
 
 root_agent = Agent(
     name="farmwise_orchestrator",

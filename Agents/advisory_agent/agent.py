@@ -8,10 +8,7 @@ load_dotenv()
 
 from google.adk.agents import Agent
 
-try:
-    from advisory_agent.tools import search_docs, get_advisory
-except ImportError:
-    from Agents.advisory_agent.tools import search_docs, get_advisory
+from .tools import get_advisory, search_docs
 
 
 def build_advisory_agent() -> Agent:

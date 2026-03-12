@@ -8,10 +8,7 @@ load_dotenv()
 
 from google.adk.agents import Agent
 
-try:
-    from market_agent.tools import get_advisory, get_mandi_prices
-except ImportError:
-    from Agents.market_agent.tools import get_advisory, get_mandi_prices
+from .tools import get_advisory, get_mandi_prices
 
 
 def build_market_agent() -> Agent:

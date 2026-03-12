@@ -8,10 +8,7 @@ load_dotenv()
 
 from google.adk.agents import Agent
 
-try:
-    from irrigation_agent.tools import get_crop_calendar, get_weather_forecast
-except ImportError:
-    from Agents.irrigation_agent.tools import get_crop_calendar, get_weather_forecast
+from .tools import get_crop_calendar, get_weather_forecast
 
 
 def build_irrigation_agent() -> Agent:

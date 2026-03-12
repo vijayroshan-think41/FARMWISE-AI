@@ -13,10 +13,7 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
-try:
-    from orchestrator.agent import root_agent
-except ImportError:
-    from Agents.orchestrator.agent import root_agent
+from .orchestrator.agent import root_agent
 
 app = FastAPI()
 
