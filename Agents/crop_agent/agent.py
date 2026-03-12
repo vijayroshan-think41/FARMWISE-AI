@@ -8,20 +8,12 @@ load_dotenv()
 
 from google.adk.agents import Agent
 
-try:
-    from crop_agent.tools import (
-        get_advisory,
-        get_crop_calendar,
-        get_mandi_prices,
-        get_region_crops,
-    )
-except ImportError:
-    from Agents.crop_agent.tools import (
-        get_advisory,
-        get_crop_calendar,
-        get_mandi_prices,
-        get_region_crops,
-    )
+from .tools import (
+    get_advisory,
+    get_crop_calendar,
+    get_mandi_prices,
+    get_region_crops,
+)
 
 
 def build_crop_agent() -> Agent:

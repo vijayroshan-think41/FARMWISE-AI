@@ -159,12 +159,12 @@ Important constraints:
 
 ## Agent Developer Commands
 
-From [`Agents/`](/home/think41/WEEK_4_PROJECT/FARMWISE-AI/Agents):
+From the repo root:
 
 ```bash
-uv sync
-uv run python parser.py
-uv run uvicorn app:app --reload --host 0.0.0.0 --port 8000
+uv sync --project Agents
+uv run --project Agents python -m Agents.parser
+uv run --project Agents uvicorn Agents.app:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ## Frontend Scope
